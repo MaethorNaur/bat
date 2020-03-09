@@ -1,0 +1,17 @@
+[package]
+name = 'bat'
+version = '0.1.0'
+authors = ['Pedro Mangabeira <pedro.mangabeira@sky.uk>']
+edition = '2018'
+
+[dependencies]
+log = '0.4'
+pretty_env_logger = '0.3'
+term = '0.6'
+
+[dependencies.clap]
+version = '2'
+features = ['yaml']
+
+[dependencies.plugins]
+path = '../plugins'

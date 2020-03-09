@@ -1,0 +1,22 @@
+[package]
+name = 'nets'
+version = '0.1.0'
+authors = ['Pedro Mangabeira <pedro.mangabeira@sky.uk>']
+edition = '2018'
+description = 'Bat-nets'
+
+[lib]
+name = 'nets'
+crate-type = [
+    'cdylib',
+    'rlib',
+]
+
+[dependencies]
+log = '0.4'
+pretty_env_logger = '0.3'
+hubcaps = '0.5'
+futures = '0.1'
+tokio = '0.1'
+[dependencies.plugins]
+path = '../../plugins'

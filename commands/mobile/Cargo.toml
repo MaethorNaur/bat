@@ -1,0 +1,24 @@
+[package]
+name = 'mobile'
+version = '0.1.0'
+authors = ['Pedro Mangabeira <pedro.mangabeira@sky.uk>']
+edition = '2018'
+description = 'Batmobile'
+
+[dependencies]
+log = '0.4'
+pretty_env_logger = '0.3'
+slugify = '0.1.0'
+
+[dependencies.openapi]
+git = 'https://github.com/softprops/openapi'
+
+[dependencies.plugins]
+path = '../../plugins'
+
+[lib]
+name = 'mobile'
+crate-type = [
+    'cdylib',
+    'rlib',
+]

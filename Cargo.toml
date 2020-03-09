@@ -1,0 +1,9 @@
+[workspace]
+members = [
+    'bat-cli',
+    'plugins',
+    'commands/mobile',
+    'commands/nets',
+]
+[profile.release]
+opt-level = 's'

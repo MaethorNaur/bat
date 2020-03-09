@@ -1,0 +1,25 @@
+name: bat
+version: "1.0"
+author: SkyUK
+about: Because I'm batman
+args:
+  - language:
+      short: l
+      long: language
+      help: Sets the language output
+      takes_value: true
+  - output:
+      short: o
+      long: output
+      value_name: PATH
+      global: true
+      takes_value: true
+      help: Output path where the result will be write
+subcommands:
+    - man:
+        about: I'm not Bruce Wayne
+    - cave:
+        about: Manage all items (plugins) that Batman have
+        subcommands:
+          - list:
+              about: List all current available items
