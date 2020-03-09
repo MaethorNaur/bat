@@ -4,7 +4,6 @@ extern crate serde;
 #[macro_use]
 extern crate log;
 mod arg;
-pub mod configuration;
 mod macros;
 mod plugins;
 pub use crate::plugins::PluginManager;

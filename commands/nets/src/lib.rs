@@ -19,14 +19,14 @@ use std::collections::HashMap;
 fn run(args: HashMap<String, String>) -> Option<PluginResult> {
     let token = var("GITHUB_TOKEN")
         .ok()
-        .or(args.get("TOKEN").map(|s| s.to_string()))
+        .or_else(|| args.get("TOKEN").map(|s| s.to_string()))
         .unwrap();
     let repo = args.get("REPO").unwrap();
     let number = args
         .get("number")
         .and_then(|number| number.parse::<u64>().ok());
     let github = Github::new(String::from("Bat-nets"), Credentials::Token(token));
-    let parts: Vec<&str> = repo.split("/").collect();
+    let parts: Vec<&str> = repo.split('/').collect();
     let mut rt = Runtime::new().unwrap();
     match rt.block_on(
         github
@@ -41,9 +41,7 @@ fn run(args: HashMap<String, String>) -> Option<PluginResult> {
             .filter_map(move |issue| {
                 let issue_number = issue.number;
                 let title = issue.title;
-                let body = issue
-                    .body
-                    .map(|body| (issue_number, title, body.to_string()));
+                let body = issue.body.map(|body| (issue_number, title, body));
                 match number {
                     None => body,
                     Some(number) if number == issue_number => body,

@@ -80,7 +80,7 @@ impl Scenario {
         Self {
             name: self.name.clone(),
             scenario_type: Keyword::ScenarioOutline,
-            examples: Some(examples.clone()),
+            examples: Some(examples),
             steps: self.steps.clone(),
         }
     }
@@ -93,12 +93,12 @@ impl Scenario {
 impl Examples {
     pub fn new(fields: Vec<String>) -> Self {
         Self {
-            fields: fields.clone(),
+            fields,
             values: vec![],
         }
     }
     pub fn values(&mut self, values: Vec<String>) -> &Self {
-        &self.values.push(values.clone());
+        self.values.push(values);
         self
     }
 }
@@ -150,7 +150,7 @@ impl fmt::Display for Examples {
             .and(f.write_str(&self.fields.join("|")))
             .and(f.write_str("|"))
             .and(f.write_str(NEW_LINE))?;
-        &self.values.iter().for_each(|values| {
+        self.values.iter().for_each(|values| {
             write!(f, "{:ident$}|", "", ident = 6)
                 .and(f.write_str(&values.join("|")))
                 .and(f.write_str("|"))
