@@ -17,9 +17,10 @@ use plugins::PluginResult;
 use std::collections::HashMap;
 
 fn run(args: HashMap<String, String>) -> Option<PluginResult> {
-    let token = var("GITHUB_TOKEN")
-        .ok()
-        .or_else(|| args.get("TOKEN").map(|s| s.to_string()))
+    let token = args
+        .get("TOKEN")
+        .map(|s| s.to_string())
+        .or_else(|| var("GITHUB_TOKEN").ok())
         .unwrap();
     let repo = args.get("REPO").unwrap();
     let number = args
@@ -77,7 +78,10 @@ on_plugin_unload!({
 declare_plugin!(
     vec![
         Arg::new("REPO", "<REPO> 'Github repo'"),
-        Arg::new("TOKEN", "[TOKEN] 'Github personal token'"),
+        Arg::new(
+            "TOKEN",
+            "[TOKEN] 'Github personal token. Override the GITHUB_TOKEN env variable'"
+        ),
         Arg::new("number", "-n, --number=[number] 'Issue number'")
     ],
     run

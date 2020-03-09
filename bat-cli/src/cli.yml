@@ -1,7 +1,22 @@
 name: bat
 version: "1.0"
 author: SkyUK
-about: Because I'm batman
+about: |
+  Better Automated Test, AKA BAT !
+
+  Because I'm batman.
+
+  By default the plugins are scanned in the the same directory. To set the directory of plugins set the variable BAT_LIB.
+  
+  To acivate logs set RUST_LOG to the correct log level. (Default to error)
+  - trace
+  - debug
+  - info
+  - warn
+  - error
+
+  You also can specify the log level per plugins/application.
+  Example: RUST_LOG=mobile=debug,nets=info
 args:
   - language:
       short: l
