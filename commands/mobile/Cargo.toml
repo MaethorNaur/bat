@@ -18,7 +18,4 @@ path = '../../plugins'
 
 [lib]
 name = 'mobile'
-crate-type = [
-    'cdylib',
-    'rlib',
-]
+crate-type = ['cdylib']
