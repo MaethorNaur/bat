@@ -12,8 +12,7 @@ use std::env::var;
 use tokio::runtime::Runtime;
 
 use plugins::gherkin::Feature;
-use plugins::Arg;
-use plugins::PluginResult;
+use plugins::{Arg, PluginResult};
 use std::collections::HashMap;
 
 fn run(args: HashMap<String, String>) -> Option<PluginResult> {

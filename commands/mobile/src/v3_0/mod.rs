@@ -17,6 +17,7 @@ enum Method {
     TRACE,
     PATCH,
 }
+
 pub fn new(openapi: Spec) -> Feature {
     let mut feature = Feature::new(openapi.info.title);
     create_scenarios(&mut feature, openapi.paths);

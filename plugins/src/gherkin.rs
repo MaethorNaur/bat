@@ -3,13 +3,13 @@ use std::fmt;
 
 const NEW_LINE: &str = "\n";
 
-#[derive(Debug, Default, PartialEq, Deserialize, Serialize)]
+#[derive(Default, PartialEq, Deserialize, Serialize)]
 pub struct Feature {
     name: String,
     scenarios: Vec<Scenario>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(PartialEq, Deserialize, Serialize)]
 pub struct Scenario {
     name: String,
     scenario_type: Keyword,
@@ -17,23 +17,23 @@ pub struct Scenario {
     examples: Option<Examples>,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Deserialize, Serialize)]
 pub struct Examples {
     fields: Vec<String>,
     values: Vec<Vec<String>>,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Deserialize, Serialize)]
 pub enum StepType {
     Step(Step),
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Deserialize, Serialize)]
 pub struct Step {
     keyword: StepKeyword,
     text: String,
 }
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Deserialize, Serialize)]
 pub enum StepKeyword {
     Given,
     When,
@@ -42,7 +42,7 @@ pub enum StepKeyword {
     But,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(PartialEq, Deserialize, Serialize)]
 pub enum Keyword {
     Feature,
     Example,

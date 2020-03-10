@@ -6,7 +6,6 @@ use rmps::Serializer;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::ffi::{CStr, OsStr};
-use std::fmt::{self, Debug, Formatter};
 use std::os::raw::c_char;
 use std::path::Path;
 
@@ -38,11 +37,12 @@ pub struct List {
     pub len: usize,
 }
 
-#[derive(Debug, Default, PartialEq, Deserialize, Serialize)]
+#[derive(Default, PartialEq, Deserialize, Serialize)]
 pub struct PluginResult {
     filename: String,
     feature: Feature,
 }
+
 impl PluginResult {
     pub fn new(filename: &str, feature: Feature) -> Self {
         Self {
@@ -66,6 +66,7 @@ impl PluginResult {
         rmp_serde::from_read_ref(&buf).unwrap()
     }
 }
+
 pub struct Plugin {
     on_plugin_unload: Void,
     run: Run,
@@ -211,7 +212,7 @@ impl PluginManager {
         };
         let args: Vec<Arg> = rmp_serde::from_read_ref(&s.to_vec()).unwrap();
         self.loaded_libraries.insert(String::from(command), lib);
-        debug!("Loaded plugin: {} {}", name, version);
+        trace!("Loaded plugin: {} {}", name, version);
         on_plugin_load();
         self.plugins.insert(
             String::from(command),
@@ -228,7 +229,7 @@ impl PluginManager {
     }
 
     pub fn unload(&mut self) {
-        debug!("Unloading plugins");
+        trace!("Unloading plugins");
 
         for (name, plugin) in self.plugins.drain() {
             trace!("Firing on_plugin_unload for {:?}", name);
@@ -259,18 +260,5 @@ impl Drop for PluginManager {
         if !self.plugins.is_empty() || !self.loaded_libraries.is_empty() {
             self.unload();
         }
-    }
-}
-
-impl Debug for PluginManager {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        let plugins: Vec<_> = self.plugins.values().fold(Vec::new(), |mut acc, p| {
-            acc.push(p.name);
-            acc
-        });
-
-        f.debug_struct("PluginManager")
-            .field("plugins", &plugins)
-            .finish()
     }
 }
