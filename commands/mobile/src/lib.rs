@@ -12,8 +12,10 @@ mod v3_0;
 use plugins::{Arg, PluginResult};
 use std::collections::HashMap;
 use std::path::Path;
+
 fn run(args: HashMap<String, String>) -> Option<PluginResult> {
     let input = args.get("INPUT").unwrap();
+
     let stem = Path::new(input)
         .file_stem()
         .and_then(|s| s.to_str())

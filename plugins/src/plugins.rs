@@ -27,6 +27,7 @@ type SString = unsafe extern "C" fn() -> *const c_char;
 type Void = unsafe extern "C" fn();
 type Run = unsafe extern "C" fn(List) -> List;
 type ArgFn = unsafe extern "C" fn() -> List;
+
 fn string_to_static_str(s: String) -> &'static str {
     Box::leak(s.into_boxed_str())
 }
@@ -107,26 +108,27 @@ impl Plugin {
     pub fn on_plugin_unload(&self) {
         unsafe { (self.on_plugin_unload)() }
     }
+
     pub fn run(&self, params: HashMap<String, String>) -> Option<PluginResult> {
         let mut buf = rmp_serde::to_vec(&params).unwrap().into_boxed_slice();
         let data = buf.as_mut_ptr();
         let len = buf.len();
         let ptr = List { data, len };
-        let s = unsafe {
+        unsafe {
             let buf = (self.run)(ptr);
             if buf.len == 0 {
                 None
             } else {
                 Some(std::slice::from_raw_parts_mut(buf.data, buf.len))
             }
-        };
-        s.map(|s| {
-            let res = PluginResult::from_vec(s.to_vec());
-            let s = s.as_mut_ptr();
+        }
+        .map(|slice| {
+            let result = PluginResult::from_vec(slice.to_vec());
+            let slice_ptr = slice.as_mut_ptr();
             unsafe {
-                Box::from_raw(s);
+                Box::from_raw(slice_ptr);
             }
-            res
+            result
         })
     }
 }
@@ -155,6 +157,7 @@ impl PluginManager {
             .find(|(name, _)| predicate(name))
             .map(|(_, plugin)| plugin)
     }
+
     pub fn list_commands(&self) -> Vec<(&str, &str, &str, &str)> {
         self.plugins.values().fold(Vec::new(), |mut acc, plugin| {
             let t = (
@@ -198,22 +201,32 @@ impl PluginManager {
                 .map_err(|e| e.to_string())
                 .unwrap(),
         );
+
         let on_plugin_unload: OsSymbol<Void> = load_fn(&lib, "on_plugin_unload");
         let on_plugin_load: OsSymbol<Void> = load_fn(&lib, "on_plugin_load");
         let on_plugin_unload: OsSymbol<Void> = load_fn(&lib, "on_plugin_unload");
+
         let run: OsSymbol<Run> = load_fn(&lib, "bat_plugin_run");
+
         let version = load_string(&lib, "bat_plugin_version");
         let name = load_string(&lib, "bat_plugin_name");
         let command = load_string(&lib, "bat_plugin_command");
+
         let args_fn: OsSymbol<ArgFn> = load_fn(&lib, "bat_plugin_args");
-        let s = {
+
+        let slice = {
             let buf = (args_fn)();
             std::slice::from_raw_parts_mut(buf.data, buf.len)
         };
-        let args: Vec<Arg> = rmp_serde::from_read_ref(&s.to_vec()).unwrap();
+
+        let args: Vec<Arg> = rmp_serde::from_read_ref(&slice.to_vec()).unwrap();
+
         self.loaded_libraries.insert(String::from(command), lib);
+
         trace!("Loaded plugin: {} {}", name, version);
+
         on_plugin_load();
+
         self.plugins.insert(
             String::from(command),
             Plugin {
